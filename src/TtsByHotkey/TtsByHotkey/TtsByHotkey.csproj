@@ -13,6 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Common\Common.Runtime\Common.Runtime.Windows\Common.Runtime.Windows.csproj" />
 	  <ProjectReference Include="..\..\Common\Common.UI\Common.UI.csproj" />
 	</ItemGroup>
 </Project>

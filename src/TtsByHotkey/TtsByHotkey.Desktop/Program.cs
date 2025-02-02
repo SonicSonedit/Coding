@@ -1,5 +1,8 @@
-﻿using Avalonia;
+﻿using Autofac;
+using Avalonia;
 using Avalonia.ReactiveUI;
+using Common.Runtime.Hotkeys;
+using Common.Runtime.Windows.Hotkeys;
 using Common.UI;
 using TtsByHotkey.ViewModels;
 using TtsByHotkey.Views;
@@ -8,20 +11,29 @@ namespace TtsByHotkey.Desktop;
 
 class Program
 {
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
+    private static TtsByHotkeyApplication CreateApplication() => new()
+    {
+        RegisterPlatformComponents = RegisterPlatformComponents,
+        RegisterWindows = RegisterWindows
+    };
+
     [STAThread]
     public static void Main(string[] args) => BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);
 
-    // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure(() => new TtsByHotkeyApplication { RegisterWindows = RegisterWindows })
-            .UsePlatformDetect()
-            .WithInterFont()
-            .LogToTrace()
-            .UseReactiveUI();
+    {
+        return AppBuilder.Configure(CreateApplication)
+                .UsePlatformDetect()
+                .WithInterFont()
+                .LogToTrace()
+                .UseReactiveUI();
+    }
+
+    private static void RegisterPlatformComponents(Autofac.ContainerBuilder builder)
+    {
+        builder.RegisterType<HotkeyManagerWindows>().As<IHotkeyManager>();
+    }
 
     private static void RegisterWindows(WindowManager windowManager)
     {

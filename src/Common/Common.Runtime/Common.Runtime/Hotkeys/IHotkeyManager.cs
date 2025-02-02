@@ -1,7 +1,9 @@
 ﻿namespace Common.Runtime.Hotkeys
 {
-    public interface IHotkeyManager
+    public interface IHotkeyManager : IDisposable
     {
-        public event Action<Hotkey> KeyPressed;
+        event Action<Hotkey> KeyPressed;
+        void Start();
+        void Stop();
     }
 }
