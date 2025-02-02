@@ -1,16 +1,18 @@
-﻿using Avalonia;
+﻿using Autofac;
+using Avalonia;
 using Avalonia.Markup.Xaml;
 using Common.Helpers;
-using Common.UI.Extensions;
+using Common.UI;
 using NLog;
 using TtsByHotkey.ViewModels;
-using TtsByHotkey.Views;
 
 namespace TtsByHotkey;
 
 public partial class App : Application
 {
     private Logger _logger;
+
+    public static Action<WindowManager> RegisterWindows { get; set; }
 
     public override void Initialize()
     {
@@ -25,9 +27,11 @@ public partial class App : Application
     {
         _logger.Info("Initializing UI...");
 
-        this.SetMainWindow<MainWindow, MainViewModel>();
-        this.SetVisualRoot<MainView, MainViewModel>();
+        var container = ContainerBuilder.Build();
+        var windowManager = container.Resolve<WindowManager>();
+        RegisterWindows(windowManager);
         base.OnFrameworkInitializationCompleted();
+        windowManager.Show<MainViewModel>();
 
         _logger.Info("Started");
     }
