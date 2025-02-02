@@ -9,7 +9,6 @@ namespace Common.Runtime.Windows.Hotkeys
     {
         public event Action<Hotkey> KeyPressed;
         private volatile SynchronizationContext _synchronizationContext;
-        private volatile IntPtr _oldWndProc;
         private volatile WndProcDelegate _wndProc;
         private volatile IntPtr _hwnd;
         private volatile bool _working = false;
@@ -47,22 +46,6 @@ namespace Common.Runtime.Windows.Hotkeys
 
             if (_synchronizationContext != null && _synchronizationContext != SynchronizationContext.Current)
                 throw new InvalidOperationException("Call from invalid thread! Call from the same thread manager was started in!");
-        }
-
-        private IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        {
-            switch ((WindowsMessage)msg)
-            {
-                case WindowsMessage.WM_CHAR:
-                    HandleKeyPress(wParam);
-                    break;
-
-                case WindowsMessage.WM_KEYDOWN:
-                    HandleKeyPress(wParam);
-                    break;
-            }
-
-            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
         }
 
         private void HandleKeyPress(IntPtr wParam)

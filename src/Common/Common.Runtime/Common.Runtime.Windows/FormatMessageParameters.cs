@@ -3,7 +3,7 @@
 namespace Common.Runtime.Windows
 {
     [StructLayout(LayoutKind.Sequential)]
-    struct FormatMessageParameters
+    public struct FormatMessageParameters
     {
         [MarshalAs(UnmanagedType.LPWStr)]
         public string Arg0;

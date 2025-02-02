@@ -7,11 +7,7 @@ namespace Common.Runtime.Windows.Hotkeys
 
     class WinApiWindowTest
     {
-        private WndProc delegWndProc = myWndProc;
-
-        [DllImport("user32.dll")]
-        static extern IntPtr DefWindowProc(IntPtr hWnd, WindowsMessage uMsg, IntPtr wParam, IntPtr lParam);
-
+        private WndProc _delegWndProc = myWndProc;
 
         internal bool create()
         {
@@ -26,7 +22,7 @@ namespace Common.Runtime.Windows.Hotkeys
             windowClass.hCursor = IntPtr.Zero;
             windowClass.lpszMenuName = null;
             windowClass.lpszClassName = "myClass";
-            windowClass.lpfnWndProc = Marshal.GetFunctionPointerForDelegate(delegWndProc);
+            windowClass.lpfnWndProc = Marshal.GetFunctionPointerForDelegate(_delegWndProc);
             windowClass.hIconSm = IntPtr.Zero;
             var regResult = WinApi.RegisterClassEx(ref windowClass);
 
@@ -59,7 +55,7 @@ namespace Common.Runtime.Windows.Hotkeys
                     break;
             }
 
-            return DefWindowProc(hWnd, msg, wParam, lParam);
+            return WinApi.DefWindowProc(hWnd, msg, wParam, lParam);
         }
     }
 }

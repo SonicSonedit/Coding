@@ -3,7 +3,7 @@
 namespace Common.Runtime.Windows
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    struct CreateWindowClass
+    public struct CreateWindowClass
     {
         [MarshalAs(UnmanagedType.U4)]
         public int cbSize;
