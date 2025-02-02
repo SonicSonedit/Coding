@@ -29,7 +29,7 @@ public partial class TtsByHotkeyApplication : Application
 
         var container = ContainerBuilder.Build();
         var windowManager = container.Resolve<WindowManager>();
-        RegisterWindows(windowManager);
+        RegisterWindows?.Invoke(windowManager);
         base.OnFrameworkInitializationCompleted();
         windowManager.Show<MainViewModel>();
 
