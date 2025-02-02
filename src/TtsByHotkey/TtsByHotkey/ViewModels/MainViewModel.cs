@@ -1,6 +1,10 @@
-﻿namespace TtsByHotkey.ViewModels;
+﻿using Common.UI.ViewModels;
 
-public class MainViewModel : ViewModelBase
+namespace TtsByHotkey.ViewModels
 {
-    public string Greeting => "Welcome to Avalonia!";
+    public class MainViewModel : ViewModelBase
+    {
+        public string Greeting => "Welcome to Avalonia!";
+    }
 }
+

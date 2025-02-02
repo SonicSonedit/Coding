@@ -11,7 +11,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\TtsByHotkey\TtsByHotkey.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Content Include="LoggerConfig.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -1,7 +1,7 @@
 ﻿using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Common.Helpers;
+using Common.UI.Extensions;
 using NLog;
 using TtsByHotkey.ViewModels;
 using TtsByHotkey.Views;
@@ -10,30 +10,24 @@ namespace TtsByHotkey;
 
 public partial class App : Application
 {
+    private Logger _logger;
+
     public override void Initialize()
     {
         LogHelper.InitializeLogging("LoggerConfig.json");
-        var entryPointLogger = LogManager.GetLogger(nameof(Application));
-        entryPointLogger.Info("Started");
+        _logger = LogManager.GetLogger(nameof(Application));
+        _logger.Info("Starting...");
+
+        AvaloniaXamlLoader.Load(this);
     }
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel()
-            };
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new MainView
-            {
-                DataContext = new MainViewModel()
-            };
-        }
+        _logger.Info("Initializing UI...");
 
+        this.SetVisualRoot<MainWindow, MainView, MainViewModel>();
         base.OnFrameworkInitializationCompleted();
+
+        _logger.Info("Started");
     }
 }
