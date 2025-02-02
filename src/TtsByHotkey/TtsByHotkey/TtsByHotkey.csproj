@@ -13,6 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Common.UI\Common.UI.csproj" />
+	  <ProjectReference Include="..\..\Common\Common.UI\Common.UI.csproj" />
 	</ItemGroup>
 </Project>
