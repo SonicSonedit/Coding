@@ -1,0 +1,35 @@
+{
+    "NLog": 
+	{
+        "throwConfigExceptions": true,
+        "targets": 
+		{
+            "console": 
+			{
+                "type": "Console",
+                "layout": "${time} [${level:uppercase=true:padding=5}] [${logger}] ${message} ${exception:format=tostring}"
+            },
+            "file": 
+			{
+                "type": "AsyncWrapper",
+                "target": 
+				{
+                    "wrappedFile": 
+					{
+                        "type": "File",
+                        "fileName": "${specialfolder:folder=LocalApplicationData:cached=true}/${processname}/${date:format=yyyy.MM.dd  HH-mm-ss}.log",
+                        "layout": "${time} [${level:uppercase=true:padding=5}] [${logger}] ${message} ${exception:format=tostring}"
+                    }
+                }
+            }
+        },
+        "rules": 
+		[
+            {
+                "logger": "*",
+                "minLevel": "Trace",
+                "writeTo": "File,Console"
+            }
+        ]
+    }
+}

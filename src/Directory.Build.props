@@ -3,5 +3,7 @@
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AvaloniaVersion>11.2.3</AvaloniaVersion>
+		<MicrosoftExtensionsVersion>8.0</MicrosoftExtensionsVersion>
+		<NLogVersion>5.3.4</NLogVersion>
 	</PropertyGroup>
 </Project>
