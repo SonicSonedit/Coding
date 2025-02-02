@@ -1,7 +1,8 @@
-﻿using System;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.ReactiveUI;
+using Common.UI;
+using TtsByHotkey.ViewModels;
+using TtsByHotkey.Views;
 
 namespace TtsByHotkey.Desktop;
 
@@ -16,9 +17,14 @@ class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+        => AppBuilder.Configure(() => new TtsByHotkeyApplication { RegisterWindows = RegisterWindows })
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace()
             .UseReactiveUI();
+
+    private static void RegisterWindows(WindowManager windowManager)
+    {
+        windowManager.Register<MainViewModel, MainWindow>();
+    }
 }

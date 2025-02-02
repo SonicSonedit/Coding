@@ -8,11 +8,11 @@ using TtsByHotkey.ViewModels;
 
 namespace TtsByHotkey;
 
-public partial class App : Application
+public partial class TtsByHotkeyApplication : Application
 {
     private Logger _logger;
 
-    public static Action<WindowManager> RegisterWindows { get; set; }
+    public Action<WindowManager> RegisterWindows { get; init; }
 
     public override void Initialize()
     {
