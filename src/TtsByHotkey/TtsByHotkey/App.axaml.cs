@@ -25,7 +25,8 @@ public partial class App : Application
     {
         _logger.Info("Initializing UI...");
 
-        this.SetVisualRoot<MainWindow, MainView, MainViewModel>();
+        this.SetMainWindow<MainWindow, MainViewModel>();
+        this.SetVisualRoot<MainView, MainViewModel>();
         base.OnFrameworkInitializationCompleted();
 
         _logger.Info("Started");
