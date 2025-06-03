@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Common.Runtime.Windows.Hotkeys
+namespace Common.Runtime.Windows
 {
     public static partial class WinApi
     {
@@ -41,6 +41,17 @@ namespace Common.Runtime.Windows.Hotkeys
                 Debugger.Break();
 
             return buffer.ToString();
+        }
+
+        public static bool CheckWinApiResult(Func<bool> condition)
+        {
+            if (condition())
+                return true;
+
+            var errorCode = GetLastError();
+            var errorText = GetWinErrorCodeText(errorCode);
+            Debugger.Break();
+            return false;
         }
     }
 }

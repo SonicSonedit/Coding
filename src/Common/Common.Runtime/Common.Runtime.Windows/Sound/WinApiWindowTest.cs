@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Common.Runtime.Windows.Hotkeys
+namespace Common.Runtime.Windows.Sound
 {
-    delegate IntPtr WndProc(IntPtr hWnd, WindowsMessage msg, IntPtr wParam, IntPtr lParam);
+    delegate nint WndProc(nint hWnd, WindowsMessage msg, nint wParam, nint lParam);
 
     class WinApiWindowTest
     {
@@ -14,35 +14,26 @@ namespace Common.Runtime.Windows.Hotkeys
             var windowClass = new CreateWindowClass();
             windowClass.cbSize = Marshal.SizeOf(typeof(CreateWindowClass));
             windowClass.style = WindowStyles.WS_EX_NOACTIVATE;
-            windowClass.hbrBackground = IntPtr.Zero;
+            windowClass.hbrBackground = nint.Zero;
             windowClass.cbClsExtra = 0;
             windowClass.cbWndExtra = 0;
-            windowClass.hInstance = IntPtr.Zero;
-            windowClass.hIcon = IntPtr.Zero;
-            windowClass.hCursor = IntPtr.Zero;
+            windowClass.hInstance = nint.Zero;
+            windowClass.hIcon = nint.Zero;
+            windowClass.hCursor = nint.Zero;
             windowClass.lpszMenuName = null;
             windowClass.lpszClassName = "myClass";
             windowClass.lpfnWndProc = Marshal.GetFunctionPointerForDelegate(_delegWndProc);
-            windowClass.hIconSm = IntPtr.Zero;
+            windowClass.hIconSm = nint.Zero;
             var regResult = WinApi.RegisterClassEx(ref windowClass);
 
-            if (regResult == 0)
-            {
-                uint error = WinApi.GetLastError();
-                return false;
-            }
-
-
-            var hWnd = WinApi.CreateWindowEx(0, windowClass.lpszClassName, "Hello Win32", WindowStyles.WS_EX_NOACTIVATE, 0, 0, 300, 400, IntPtr.Zero, IntPtr.Zero, windowClass.hInstance, IntPtr.Zero);
-
-            Console.WriteLine($"{hWnd == IntPtr.Zero}  {Marshal.GetLastWin32Error()}");
-            if (hWnd == IntPtr.Zero)
+            if (!WinApi.CheckWinApiResult(() => regResult != 0))
                 return false;
 
-            return true;
+            var hWnd = WinApi.CreateWindowEx(0, windowClass.lpszClassName, "Hello Win32", WindowStyles.WS_EX_NOACTIVATE, 0, 0, 300, 400, nint.Zero, nint.Zero, windowClass.hInstance, nint.Zero);
+            return WinApi.CheckWinApiResult(() => hWnd != IntPtr.Zero);
         }
 
-        private static IntPtr myWndProc(IntPtr hWnd, WindowsMessage msg, IntPtr wParam, IntPtr lParam)
+        private static nint myWndProc(nint hWnd, WindowsMessage msg, nint wParam, nint lParam)
         {
             switch (msg)
             {

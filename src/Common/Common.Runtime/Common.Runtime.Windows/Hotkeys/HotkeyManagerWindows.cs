@@ -1,18 +1,21 @@
 ﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Common.Runtime.Hotkeys;
-using static Common.Runtime.Windows.Hotkeys.WinApi;
+
 
 namespace Common.Runtime.Windows.Hotkeys
 {
     public class HotkeyManagerWindows : IHotkeyManager
     {
         public event Action<Hotkey> KeyPressed;
+        private readonly WinApi.HookCallbackDelegate _keyboardHookCallback;
+        private volatile IntPtr _hookPtr;
         private volatile SynchronizationContext _synchronizationContext;
-        private volatile WndProcDelegate _wndProc;
-        private volatile IntPtr _hwnd;
         private volatile bool _working = false;
-        private volatile IntPtr _classHandle = IntPtr.Zero;
+
+        public HotkeyManagerWindows()
+        {
+            _keyboardHookCallback = KeyboardHookCallback;  // надо запинить в памяти функцию
+        }
 
         public void Start()
         {
@@ -22,10 +25,8 @@ namespace Common.Runtime.Windows.Hotkeys
                 return;
 
             _synchronizationContext = SynchronizationContext.Current;
-
-
-            var a = new WinApiWindowTest();
-            a.create();
+            _hookPtr = WinApi.SetWindowsHookEx(WinApi.HookId.Keyboard, KeyboardHookCallback, IntPtr.Zero, 0);  // надо запинить в памяти указатель на хук
+            WinApi.CheckWinApiResult(() => _hookPtr != IntPtr.Zero);
         }
 
         public void Stop()
@@ -35,8 +36,40 @@ namespace Common.Runtime.Windows.Hotkeys
             if (!_working)
                 return;
 
-            WinApi.DestroyWindow(_hwnd);
             _synchronizationContext = null;
+        }
+
+        private IntPtr KeyboardHookCallback(int code, IntPtr wParam, ref KeyboardHookLParam lParam)
+        {
+            if (code != 0)
+                return WinApi.CallNextHookEx(_hookPtr, code, wParam, ref lParam);
+
+            var wParamKey = (WindowsKey)wParam;
+            var wParamEvent = (KeyboardEvent)(wParam.ToInt32());
+            var wParamEvent2 = (KeyboardEvent)wParam;
+            var lParamVirtualCode = (WindowsKey)lParam.VirtualCode;
+            var lParamScanCode = (WindowsKey)lParam.ScanCode;
+
+            var virtualKey = (WindowsKey)lParam.VirtualCode;
+            if (virtualKey != WindowsKey.ShiftLeft)
+            {
+                var a = ";";
+            }
+            if (virtualKey == WindowsKey.Packet)  // packet opcode, надо смотреть lParam.ScanCode
+            {
+                //var keyboardEvent = (KeyboardEvent)(wParam.ToInt32());
+                //if (keyboardEvent == KeyboardEvent.KeyDown || keyboardEvent == KeyboardEvent.SysKeyDown)
+                //{
+                //    // todo?
+                //}
+                //if (keyboardEvent == KeyboardEvent.KeyUp || keyboardEvent == KeyboardEvent.SysKeyUp)
+                //{
+                //    // todo?
+                //}
+                return WinApi.CallNextHookEx(_hookPtr, code, wParam, ref lParam);
+            }
+
+            return WinApi.CallNextHookEx(_hookPtr, code, wParam, ref lParam);
         }
 
         private void AssertSynchronizationContext()
@@ -46,27 +79,6 @@ namespace Common.Runtime.Windows.Hotkeys
 
             if (_synchronizationContext != null && _synchronizationContext != SynchronizationContext.Current)
                 throw new InvalidOperationException("Call from invalid thread! Call from the same thread manager was started in!");
-        }
-
-        private void HandleKeyPress(IntPtr wParam)
-        {
-            Debugger.Break();
-            var test1 = (Key)wParam;
-            var test2 = (PhysicalKey)wParam;
-            var test3 = (WindowsKey)wParam;
-        }
-
-        private void HandleKeyPress(IntPtr wParam, IntPtr lParam)
-        {
-            var testw1 = (Key)wParam;
-            var testw2 = (PhysicalKey)wParam;
-            var testw3 = (KeyModifiers)wParam;
-            var testw4 = (WindowsKey)wParam;
-
-            var testl1 = (Key)lParam;
-            var testl2 = (PhysicalKey)lParam;
-            var testl3 = (KeyModifiers)lParam;
-            var testl4 = (WindowsKey)lParam;
         }
 
         public void Dispose() => Stop();

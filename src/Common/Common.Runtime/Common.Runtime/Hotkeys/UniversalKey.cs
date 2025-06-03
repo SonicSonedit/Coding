@@ -2,7 +2,7 @@
 {
     // Source: AvaloniaUI
 
-    public enum PhysicalKey
+    public enum UniversalKey
     {
         //
         // Summary:
@@ -12,13 +12,13 @@
         // Summary:
         //     `~ on a US keyboard. This is the 半角/全角/漢字 (hankaku/zenkaku/kanji) key on Japanese
         //     keyboards.
-        Backquote,
+        BackQuote,
         //
         // Summary:
         //     Used for both the US \| (on the 101-key layout) and also for the key located
         //     between the " and Enter keys on row C of the 102-, 104- and 106-key layouts.
         //     #~ on a UK (102) keyboard.
-        Backslash,
+        BackSlash,
         //
         // Summary:
         //     [{ on a US keyboard.
